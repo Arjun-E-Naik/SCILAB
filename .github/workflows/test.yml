@@ -1,0 +1,38 @@
+# =============================================================================
+# .github/workflows/test.yml
+# GitHub Actions CI — runs all Scilab tests on every push and pull request
+# =============================================================================
+
+name: Run Scilab Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Scilab
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y scilab scilab-cli --no-install-recommends
+          scilab-cli -version
+
+      - name: Run immse tests
+        run: timeout 60 scilab-cli -nb -f tests/test_immse.sce
+
+      - name: Run otsuthresh tests
+        run: timeout 60 scilab-cli -nb -f tests/test_otsuthresh.sce
+
+      - name: Run imgradientxy tests
+        run: timeout 90 scilab-cli -nb -f tests/test_imgradientxy.sce
+
+      - name: Run all tests summary
+        run: bash tests/run_all_tests.sh
