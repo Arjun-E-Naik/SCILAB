@@ -1,8 +1,6 @@
-// =============================================================================
+
 // immse.sce — Mean Squared Error between two images
-// FOSSEE Summer Fellowship 2026 — Scilab Image Processing Toolbox
 // Equivalent to Octave image package: immse()
-// =============================================================================
 
 function err = immse(A, B)
 // immse - Compute Mean Squared Error (MSE) between two images or arrays
@@ -33,29 +31,27 @@ function err = immse(A, B)
 
 endfunction
 
-// =============================================================================
-// TEST CASES
-// =============================================================================
 
-disp("============================");
+
+
 disp("  immse — Test Cases");
-disp("============================");
 
-// Test 1: Identical matrices → MSE = 0
+
+// Test 1: Identical matrices ->- MSE = 0
 A1 = [1 2 3; 4 5 6; 7 8 9];
 r1 = immse(A1, A1);
 printf("Test 1 [Identical matrices]      : %.4f  (expected: 0.0000)\n", r1);
 
-// Test 2: Uniform difference → MSE = 4
+// Test 2: Uniform difference ->- MSE = 4
 r2 = immse([0 0; 0 0], [2 2; 2 2]);
 printf("Test 2 [Zeros vs twos 2×2]       : %.4f  (expected: 4.0000)\n", r2);
 
-// Test 3: Vectors shifted by 1 → MSE = 1
+// Test 3: Vectors shifted by 1 ->- MSE = 1
 r3 = immse([1 2 3 4 5], [2 3 4 5 6]);
 printf("Test 3 [Vectors shifted by 1]    : %.4f  (expected: 1.0000)\n", r3);
 
-// Test 4: Integer image patches → MSE = 81.25
-// Differences: -10, 10, 10, -5  → squares: 100,100,100,25 → mean=81.25
+// Test 4: Integer image patches ->- MSE = 81.25
+// Differences: -10, 10, 10, -5  ->- squares: 100,100,100,25 → mean=81.25
 A4 = double([100 150; 200 250]);
 B4 = double([110 140; 190 255]);
 r4 = immse(A4, B4);
@@ -68,8 +64,6 @@ B5 = A5 + rand(10, 10) * 10;
 r5 = immse(A5, B5);
 printf("Test 5 [Noisy image pair]        : %.4f  (expected: small positive)\n", r5);
 
-disp("============================");
-disp("  All immse tests PASSED");
-disp("============================");
+
 
 quit

@@ -1,8 +1,7 @@
-// =============================================================================
+
 // otsuthresh.sce — Otsu's Global Threshold from Histogram
-// FOSSEE Summer Fellowship 2026 — Scilab Image Processing Toolbox
 // Equivalent to Octave image package: otsuthresh()
-// =============================================================================
+
 
 function thresh = otsuthresh(hist_counts)
 // otsuthresh - Compute Otsu's optimal global threshold from a histogram
@@ -40,10 +39,10 @@ function thresh = otsuthresh(hist_counts)
         error("otsuthresh: histogram is empty (all zeros).");
     end
 
-    p     = hist_counts / total;           // normalised probabilities
-    omega = cumsum(p);                     // cumulative class probabilities
-    mu_t  = sum((0:N-1)' .* p);           // total mean
-    mu_k  = cumsum((0:N-1)' .* p);        // cumulative mean
+    p     = hist_counts / total;           
+    omega = cumsum(p);                     
+    mu_t  = sum((0:N-1)' .* p);           
+    mu_k  = cumsum((0:N-1)' .* p);       
 
     sigma_b_sq = zeros(N, 1);
     for k = 1:N
@@ -61,13 +60,13 @@ function thresh = otsuthresh(hist_counts)
 
 endfunction
 
-// =============================================================================
-// TEST CASES
-// =============================================================================
 
-disp("============================");
+// TEST CASES
+
+
+
 disp("  otsuthresh — Test Cases");
-disp("============================");
+
 
 // Test 1: Gaussian bimodal peaks at gray=50 and gray=200
 // Threshold expected near gray=125 (normalised ~0.49)
@@ -78,17 +77,17 @@ end
 T1 = otsuthresh(h1);
 printf("Test 1 [Gaussian bimodal @50,200] : thresh=%.4f  gray=%d  (expected ~0.4902, ~125)\n", T1, round(T1*255));
 
-// Test 2: Uniform histogram → threshold near 0.5
+// Test 2: Uniform histogram -> threshold near 0.5
 h2 = ones(256,1) * 100;
 T2 = otsuthresh(h2);
 printf("Test 2 [Uniform histogram]        : thresh=%.4f         (expected ~0.4980)\n", T2);
 
-// Test 3: Single spike at gray=0 → threshold = 0
+// Test 3: Single spike at gray=0 -> threshold = 0
 h3 = zeros(256,1); h3(1) = 1000;
 T3 = otsuthresh(h3);
 printf("Test 3 [All pixels gray=0]        : thresh=%.4f         (expected 0.0000)\n", T3);
 
-// Test 4: Single spike at gray=255 → threshold = 1 (or nearest)
+// Test 4: Single spike at gray=255 -> threshold = 1 (or nearest)
 h4 = zeros(256,1); h4(256) = 1000;
 T4 = otsuthresh(h4);
 printf("Test 4 [All pixels gray=255]      : thresh=%.4f         (expected 0.0000 — single class)\n", T4);
@@ -102,11 +101,9 @@ end
 T5 = otsuthresh(counts5);
 BW5 = (I5 >= T5 * 255);
 printf("Test 5 [Synthetic image binarize] : thresh=%.4f\n", T5);
-printf("         BW left-half  sum = %d  (expected 0)\n",  sum(sum(BW5(:,1:5))));
-printf("         BW right-half sum = %d  (expected 50)\n", sum(sum(BW5(:,6:10))));
+printf("BW left-half  sum = %d  (expected 0)\n",  sum(sum(BW5(:,1:5))));
+printf(" BW right-half sum = %d  (expected 50)\n", sum(sum(BW5(:,6:10))));
 
-disp("============================");
-disp("  All otsuthresh tests PASSED");
-disp("============================");
+
 
 quit

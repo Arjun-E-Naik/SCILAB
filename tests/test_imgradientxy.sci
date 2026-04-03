@@ -1,7 +1,7 @@
-// =============================================================================
+
 // test_imgradientxy.sce — Standalone test runner for imgradientxy
 // Run: scilab-cli -nb -f tests/test_imgradientxy.sce
-// =============================================================================
+
 
 function [Gx, Gy] = imgradientxy(I, method)
     if argn(2) < 2 then method = 'sobel'; end
@@ -50,17 +50,17 @@ failed = 0;
 
 function [p,f] = check(label, got, expected, tol, p, f)
     if abs(got - expected) <= tol then
-        printf("  ✓ PASS  %s : %.4f\n", label, got);
+        printf("   PASS  %s : %.4f\n", label, got);
         p = p + 1;
     else
-        printf("  ✗ FAIL  %s : got=%.4f  expected=%.4f\n", label, got, expected);
+        printf("   FAIL  %s : got=%.4f  expected=%.4f\n", label, got, expected);
         f = f + 1;
     end
 endfunction
 
-disp("─────────────────────────────────────");
+
 disp("  TEST SUITE: imgradientxy");
-disp("─────────────────────────────────────");
+
 
 // Test 1: Constant → zero gradients
 [Gx,Gy] = imgradientxy(100*ones(5,5));
@@ -97,10 +97,10 @@ I6 = rand(7,9)*100;
 [Gx6,Gy6] = imgradientxy(I6,'sobel');
 sz_ok = isequal(size(Gx6), size(I6)) & isequal(size(Gy6), size(I6));
 if sz_ok then
-    printf("  ✓ PASS  output size matches input : [%d %d]\n", size(Gx6,1), size(Gx6,2));
+    printf("   PASS  output size matches input : [%d %d]\n", size(Gx6,1), size(Gx6,2));
     passed = passed + 1;
 else
-    printf("  ✗ FAIL  output size mismatch\n");
+    printf("   FAIL  output size mismatch\n");
     failed = failed + 1;
 end
 
@@ -109,9 +109,9 @@ I7 = eye(4,4)*100;
 [Gx7,Gy7] = imgradientxy(I7,'intermediate');
 [passed,failed] = check("intermediate not all zero Gx", max(abs(Gx7(:))) > 0, 1, 1e-10, passed, failed);
 
-disp("─────────────────────────────────────");
+
 printf("  Results: %d passed, %d failed\n", passed, failed);
-disp("─────────────────────────────────────");
+
 
 if failed > 0 then
     exit(1);

@@ -1,7 +1,7 @@
-// =============================================================================
+
 // test_otsuthresh.sce — Standalone test runner for otsuthresh
 // Run: scilab-cli -nb -f tests/test_otsuthresh.sce
-// =============================================================================
+
 
 function thresh = otsuthresh(hist_counts)
     if argn(2) ~= 1 then
@@ -38,7 +38,7 @@ failed = 0;
 
 function [p,f] = check(label, got, expected, tol, p, f)
     if abs(got - expected) <= tol then
-        printf("  ✓ PASS  %s : %.6f\n", label, got);
+        printf("   PASS  %s : %.6f\n", label, got);
         p = p + 1;
     else
         printf("  ✗ FAIL  %s : got=%.6f  expected=%.6f\n", label, got, expected);
@@ -46,9 +46,11 @@ function [p,f] = check(label, got, expected, tol, p, f)
     end
 endfunction
 
-disp("─────────────────────────────────────");
-disp("  TEST SUITE: otsuthresh");
-disp("─────────────────────────────────────");
+
+
+disp("  TESTS: otsuthresh");
+
+
 
 // Test 1: Gaussian bimodal peaks → threshold near 0.49
 h1 = zeros(256,1);
@@ -68,10 +70,10 @@ h3 = zeros(256,1); h3(1) = 500;
 h4 = zeros(256,1); h4(100) = 1000; h4(200) = 1000;
 T4 = otsuthresh(h4);
 if T4 >= 0 & T4 <= 1 then
-    printf("  ✓ PASS  two-spike output in [0,1] : %.6f\n", T4);
+    printf("   PASS  two-spike output in [0,1] : %.6f\n", T4);
     passed = passed + 1;
 else
-    printf("  ✗ FAIL  two-spike output out of [0,1] : %.6f\n", T4);
+    printf("   FAIL  two-spike output out of [0,1] : %.6f\n", T4);
     failed = failed + 1;
 end
 
@@ -92,16 +94,16 @@ rand("seed", 7);
 h6 = floor(rand(256,1)*1000);
 T6 = otsuthresh(h6);
 if T6 >= 0 & T6 <= 1 then
-    printf("  ✓ PASS  random histogram in [0,1] : %.6f\n", T6);
+    printf("   PASS  random histogram in [0,1] : %.6f\n", T6);
     passed = passed + 1;
 else
-    printf("  ✗ FAIL  random histogram out of range : %.6f\n", T6);
+    printf("   FAIL  random histogram out of range : %.6f\n", T6);
     failed = failed + 1;
 end
 
-disp("─────────────────────────────────────");
+
 printf("  Results: %d passed, %d failed\n", passed, failed);
-disp("─────────────────────────────────────");
+
 
 if failed > 0 then
     exit(1);
