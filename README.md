@@ -46,10 +46,10 @@ Computes directional gradients (Gx and Gy) of a grayscale image using various me
 
 ## File Structure
 
-- immse.sci          → Mean Squared Error function
-- otsuthresh.sci     → Otsu threshold computation
-- imgradientxy.sci   → Directional gradient computation
-- test scripts       → Contain validation and test cases
+- immse.sci          --> Mean Squared Error function
+- otsuthresh.sci     --> Otsu threshold computation
+- imgradientxy.sci   --> Directional gradient computation
+- test scripts       --> Contain validation and test cases
 
 ---
 
@@ -105,24 +105,6 @@ bash tests/run_all_tests.sh imgradientxy
 3. Call function:
    err = immse(A, B)
    thresh = otsuthresh(hist_counts)
-
----
-
-## Approach
-
-- Functions implemented using vectorized operations
-- Histogram-based processing for efficiency
-- Cumulative sums used to reduce computation time
-- Designed to match behavior of Octave image package
-
----
-
-## Optimization Techniques
-
-- Vectorization instead of loops
-- Preallocation of arrays
-- Reduced redundant calculations
-- Efficient use of built-in functions (mean, sum, cumsum)
 
 ---
 

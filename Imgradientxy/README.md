@@ -109,19 +109,6 @@ This approach ensures clarity of implementation while maintaining correctness.
 
 ---
 
-## Optimization Considerations
-
-- Preallocation of output matrices (Gx, Gy) is used to improve performance
-- Redundant computations are avoided by computing indices only once per iteration
-- Replicate padding reduces boundary checks inside loops
-
-Possible improvements:
-- Replace manual convolution with conv2() for faster execution
-- Vectorize central and intermediate difference computations
-- Use built-in padding functions if available
-
----
-
 ## Test Cases
 
 1. Constant image
@@ -144,5 +131,3 @@ Expected: correct numerical gradients
 ## Conclusion
 
 The function successfully computes directional gradients using multiple methods. It balances clarity and correctness while allowing scope for performance optimization using vectorized operations.
-
-I give complete explanation of this Algo with code.

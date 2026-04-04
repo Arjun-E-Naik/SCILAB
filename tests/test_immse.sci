@@ -1,6 +1,6 @@
 
 // test_immse.sce — Standalone test runner for immse
-// Run: scilab-cli -nb -f tests/test_immse.sce
+// Run: scilab-cli -nb -f tests/test_immse.sci
 
 function err = immse(A, B)
     if argn(2) ~= 2 then
@@ -19,10 +19,10 @@ failed = 0;
 
 function [p,f] = check(label, got, expected, tol, p, f)
     if abs(got - expected) <= tol then
-        printf("   PASS  %s : %.6f\n", label, got);
+        printf("PASS  %s : %.6f\n", label, got);
         p = p + 1;
     else
-        printf("   FAIL  %s : got=%.6f  expected=%.6f\n", label, got, expected);
+        printf("FAIL  %s : got=%.6f  expected=%.6f\n", label, got, expected);
         f = f + 1;
     end
 endfunction

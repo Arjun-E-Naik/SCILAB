@@ -1,6 +1,6 @@
 
 // test_imgradientxy.sce — Standalone test runner for imgradientxy
-// Run: scilab-cli -nb -f tests/test_imgradientxy.sce
+// Run: scilab-cli -nb -f tests/test_imgradientxy.sci
 
 
 function [Gx, Gy] = imgradientxy(I, method)
@@ -59,21 +59,21 @@ function [p,f] = check(label, got, expected, tol, p, f)
 endfunction
 
 
-disp("  TEST SUITE: imgradientxy");
+disp("  TEST: imgradientxy");
 
 
-// Test 1: Constant → zero gradients
+// Test 1: Constant --> zero gradients
 [Gx,Gy] = imgradientxy(100*ones(5,5));
 [passed,failed] = check("constant image Gx=0", max(abs(Gx(:))), 0, 1e-10, passed, failed);
 [passed,failed] = check("constant image Gy=0", max(abs(Gy(:))), 0, 1e-10, passed, failed);
 
-// Test 2: Vertical edge → large Gx
+// Test 2: Vertical edge --> large Gx
 I2 = [zeros(5,3), 255*ones(5,3)];
 [Gx2,Gy2] = imgradientxy(I2,'sobel');
 [passed,failed] = check("vertical edge max|Gx|>0", max(abs(Gx2(:))), 1020, 1, passed, failed);
 [passed,failed] = check("vertical edge max|Gy|=0", max(abs(Gy2(:))), 0, 1e-10, passed, failed);
 
-// Test 3: Horizontal edge → large Gy
+// Test 3: Horizontal edge --> large Gy
 I3 = [zeros(3,5); 255*ones(3,5)];
 [Gx3,Gy3] = imgradientxy(I3,'sobel');
 [passed,failed] = check("horizontal edge max|Gx|=0", max(abs(Gx3(:))), 0, 1e-10, passed, failed);

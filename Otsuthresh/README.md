@@ -87,19 +87,6 @@ The implementation follows a structured and efficient approach:
 
 ---
 
-## Optimization Considerations
-
-- Histogram normalization reduces repeated division operations
-- Cumulative sums improve efficiency compared to recomputing sums
-- Preallocation of arrays avoids dynamic resizing
-
-Possible improvements:
-- Fully vectorize variance computation to remove loop over k
-- Use built-in functions for histogram computation when working from images
-- Optimize memory usage for large histograms
-
----
-
 ## Test Cases
 
 1. Bimodal Gaussian histogram
@@ -122,5 +109,3 @@ Expected: correct separation of two intensity groups
 ## Conclusion
 
 The otsuthresh function accurately computes the optimal threshold using Otsu’s method. It efficiently utilizes histogram-based computations and cumulative statistics to achieve reliable and consistent results.
-
-I give the complete explanation of Algorithm with code .

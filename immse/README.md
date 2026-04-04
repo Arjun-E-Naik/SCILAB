@@ -64,18 +64,6 @@ This approach improves efficiency and keeps the code simple and readable.
 
 ---
 
-## Optimization Considerations
-
-- Vectorized computation avoids explicit loops, reducing execution time
-- Input conversion to double ensures numerical stability
-- Memory usage is minimal as operations are performed in-place
-
-Possible improvements:
-- Use A(:) and B(:) explicitly for clarity in vector operations
-- Handle very large images using chunk-based computation (advanced use case)
-
----
-
 ## Test Cases
 
 1. Identical matrices
@@ -98,5 +86,3 @@ Expected output: small positive value
 ## Conclusion
 
 The immse function provides an efficient and accurate way to measure similarity between two images or datasets. The use of vectorized operations ensures good performance while maintaining clarity of implementation.
-
-I given the complete explanation of alforithm with code and it passes all the test cases.
