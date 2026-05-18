@@ -23,7 +23,7 @@ g_fail_count = 0;
 
 // Load implementations
 exec('bwmorph/bwmorph_old.sci', -1);
-exec('bwmorph/bwmorph_new.sci', -1);
+exec('bwmorph/bwmorph_new_clean.sci', -1);
 
 // ---------------------------------------------------------------------------
 // Utility helpers

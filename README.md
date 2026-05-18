@@ -1,128 +1,76 @@
-# Scilab Image Processing Toolbox (SCI Functions)
+# SCILAB Image Processing Utilities
 
-## Overview
-This project implements essential image processing functions in Scilab using `.sci` files, similar to the functionality provided in Octave’s image package.
+A small collection of Scilab (.sci) implementations of common image-processing routines and test harnesses. This repository aims to provide simple, portable, and well-tested Scilab functions for educational and prototyping use.
 
-All functions are modular, reusable, and designed for efficient numerical computation.
+Core features
+- `bwmorph_old.sci` — Reference Zhang-Suen thinning implementation (loop-based).
+- `bwmorph_new.sci` — LUT-accelerated Zhang-Suen thinning (faster implementation).
+- `immse/`, `Imgradientxy/`, `Otsuthresh/` — Other utility functions with tests.
+- `tests/` — Test scripts and a runner to validate behavior non-interactively.
 
----
+Requirements
+- Ubuntu or compatible Linux
+- Scilab (scilab-cli) installed
 
-## Implemented Functions
+Quick start
+1. Install Scilab:
 
-### 1. immse.sci
-Computes the Mean Squared Error (MSE) between two images or numerical arrays.
-
-- Input: Two matrices of same size
-- Output: Scalar value (error)
-- Purpose: Measures similarity between two images
-- Formula:
-  MSE = mean((A - B)^2)
-
----
-
-### 2. otsuthresh.sci
-Computes the optimal global threshold using Otsu’s method from histogram data.
-
-- Input: Histogram counts (1D vector)
-- Output: Normalized threshold value (range: 0 to 1)
-- Purpose: Used for image segmentation (binarization)
-- Key Concept:
-  Maximizes between-class variance to separate foreground and background
-
----
-
-### 3. imgradientxy.sci
-Computes directional gradients (Gx and Gy) of a grayscale image using various methods.
-
-- Input: 2-D grayscale image matrix, optional method string
-- Output: Two matrices (Gx, Gy) of same size as input
-- Purpose: Edge detection and gradient computation
-- Methods: 'sobel' (default), 'prewitt', 'central', 'intermediate'
-- Key Concept:
-  Gx > 0: intensity increases left to right
-  Gy > 0: intensity increases top to bottom
-
----
-
-## File Structure
-
-- immse.sci          --> Mean Squared Error function
-- otsuthresh.sci     --> Otsu threshold computation
-- imgradientxy.sci   --> Directional gradient computation
-- test scripts       --> Contain validation and test cases
-
----
-
-## How to Run
-
-### Prerequisites
 ```bash
+sudo apt-get update
 sudo apt-get install -y scilab scilab-cli
 ```
 
-### Run Individual Functions
+2. Run the bwmorph demo:
+
 ```bash
-# Run immse function
-scilab-cli -nb -f immse/immse.sci
-
-# Run otsuthresh function
-scilab-cli -nb -f Otsuthresh/Otsuthresh.sci
-
-# Run imgradientxy function
-scilab-cli -nb -f Imgradientxy/Imgradientxy.sci
+scilab-cli -nb -f tests/run_bwmorph.sci
 ```
 
-### Run Individual Tests
+3. Run the complete test suite:
+
 ```bash
-# Test immse function
-scilab-cli -nb -f tests/test_immse.sci
-
-# Test otsuthresh function
-scilab-cli -nb -f tests/test_otsuthresh.sci
-
-# Test imgradientxy function
-scilab-cli -nb -f tests/test_imgradientxy.sci
-```
-
-### Run All Tests Together
-```bash
-# Run complete test suite
 bash tests/run_all_tests.sh
-
-# Run specific test only
-bash tests/run_all_tests.sh immse
-bash tests/run_all_tests.sh otsuthresh
-bash tests/run_all_tests.sh imgradientxy
 ```
 
-## How to Use
+Usage examples
 
-1. Open Scilab
-2. Load function file:
-   exec('immse.sci', -1)
-   exec('otsuthresh.sci', -1)
+- Thinning a binary image with the new implementation:
 
-3. Call function:
-   err = immse(A, B)
-   thresh = otsuthresh(hist_counts)
+```scilab
+exec('bwmorph/bwmorph_new.sci');
+I = zeros(7,7);
+I(3:5,3:5) = 1;
+out = bwmorph_new(I, 'thin');
+disp(out);
+```
 
----
+- Using the denoise operation:
 
-## Test Coverage
+```scilab
+exec('bwmorph/bwmorph_new.sci');
+noisy = rand(20,20) > 0.5;
+den = bwmorph_new(noisy, 'denoise');
+disp(den);
+```
 
-Each function includes test cases covering:
+Testing
 
-- Basic functionality
-- Edge cases (empty, uniform data, extreme values)
-- Realistic image scenarios
+- Run a single function test with `scilab-cli -nb -f tests/test_imgradientxy.sci`.
+- Run the full test runner with `bash tests/run_all_tests.sh`.
 
----
+Contributing
 
-## GitHub Repository
+Contributions are welcome. Please:
+- Fork the repository
+- Make changes on a feature branch
+- Add or update tests where applicable
+- Open a pull request with a clear description of changes
 
+License
 
+This project is MIT licensed. See the `LICENSE` file for details.
+
+Repository
 
 https://github.com/Arjun-E-Naik/SCILAB
-
----
 
