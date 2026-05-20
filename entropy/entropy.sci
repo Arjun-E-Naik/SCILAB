@@ -36,7 +36,7 @@ function e = entropy(I, varargin)
     end
 
     
-    // preprocess image
+    
     
 
     I=convert_uint8(I);
