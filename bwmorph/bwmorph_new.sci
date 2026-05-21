@@ -1,115 +1,172 @@
-function [A, B] = AB_from_bits(P)
-    B = sum(P);
-    A = 0;
-    for i = 1:7
-        if P(i)==0 & P(i+1)==1 then A = A+1; end
+function bw_out = bwmorph_thin_fast(bw, n)
+
+    // If iteration count not given,
+    // continue until image stabilizes
+    if argn(2) < 2 then
+        n = %inf;
     end
-    if P(8)==0 & P(1)==1 then A = A+1; end
-endfunction
 
-function [lut1, lut2] = build_luts()
-    lut1 = zeros(1, 256);
-    lut2 = zeros(1, 256);
-
-    for code = 0:255
-        P  = double(bitget(uint8(code), 1:8));
-        [A, B] = AB_from_bits(P);
-
-        P2 = P(1);
-        P4 = P(3);
-        P6 = P(5);
-        P8 = P(7);
-
-        if B>=2 & B<=6 & A==1 then
-            if (P2*P4*P6 == 0) & (P4*P6*P8 == 0) then
-                lut1(code+1) = 1;
-            end
-            if (P2*P6*P8 == 0) & (P2*P4*P8 == 0) then
-                lut2(code+1) = 1;
-            end
-        end
-    end
-endfunction
-
-function code = compute_neigh_code(img, r, c)
-    P = [img(r-1,c  ), img(r-1,c+1), img(r,  c+1), img(r+1,c+1), ...
-         img(r+1,c  ), img(r+1,c-1), img(r,  c-1), img(r-1,c-1)];
-    code = 0;
-    for i = 1:8
-        code = code + P(i) * 2^(i-1);
-    end
-    code = int(code);
-endfunction
-
-function out = median_filter3(img)
-    out = img;
-    [m, n] = size(img);
-    for r = 2:m-1
-        for c = 2:n-1
-            w = matrix(img(r-1:r+1, c-1:c+1), 1, -1);
-            out(r,c) = gsort(w, 'g', 'i')(5);
-        end
-    end
-endfunction
-
-function bw_out = bwmorph_thin_new(bw, n)
-    if argn(2) < 3 then n = %inf; end
-
+    // Convert input to binary
     bw_out = double(bw > 0);
-    [rows, cols] = size(bw_out);
 
+    // Build lookup tables only once
     [lut1, lut2] = build_luts();
 
-    iter    = 0;
+    [rows, cols] = size(bw_out);
+
+    iter = 0;
     changed = %t;
 
     while changed
-        if n ~= %inf & iter >= n then break; end
-        iter    = iter + 1;
+
+        // stop if maximum iterations reached
+        if n <> %inf & iter >= n then
+            break;
+        end
+
+        iter = iter + 1;
         changed = %f;
 
-        del = zeros(rows, cols);
-        for r = 2:rows-1
-            for c = 2:cols-1
-                if bw_out(r,c) == 1 then
-                    code = compute_neigh_code(bw_out, r, c);
-                    if lut1(code+1) == 1 then del(r,c) = 1; end
-                end
-            end
-        end
-        if or(del == 1) then
-            bw_out(del == 1) = 0;
-            changed = %t;
-        end
+        //------------------------------------------------
+        // PASS 1
+        //------------------------------------------------
 
         del = zeros(rows, cols);
+
+        // Process only interior pixels
         for r = 2:rows-1
+
             for c = 2:cols-1
-                if bw_out(r,c) == 1 then
-                    code = compute_neigh_code(bw_out, r, c);
-                    if lut2(code+1) == 1 then del(r,c) = 1; end
+
+                if bw_out(r,c)==1 then
+
+                    //-------------------------------------
+                    // Read neighborhood
+                    //-------------------------------------
+
+                    P2 = bw_out(r-1,c);
+                    P3 = bw_out(r-1,c+1);
+                    P4 = bw_out(r,c+1);
+
+                    P5 = bw_out(r+1,c+1);
+                    P6 = bw_out(r+1,c);
+                    P7 = bw_out(r+1,c-1);
+
+                    P8 = bw_out(r,c-1);
+                    P9 = bw_out(r-1,c-1);
+
+                    //-------------------------------------
+                    // Convert neighborhood into code
+                    //-------------------------------------
+
+                    code = 0;
+
+                    code = code + P2*1;
+                    code = code + P3*2;
+                    code = code + P4*4;
+                    code = code + P5*8;
+
+                    code = code + P6*16;
+                    code = code + P7*32;
+                    code = code + P8*64;
+                    code = code + P9*128;
+
+                    //-------------------------------------
+                    // Lookup deletion condition
+                    //-------------------------------------
+
+                    if lut1(code+1)==1 then
+                        del(r,c)=1;
+                    end
+
                 end
+
             end
+
         end
-        if or(del == 1) then
-            bw_out(del == 1) = 0;
-            changed = %t;
+
+        //-----------------------------------------
+        // Delete marked pixels
+        //-----------------------------------------
+
+        if or(del==1) then
+
+            bw_out(del==1)=0;
+
+            changed=%t;
+
+        end
+
+
+        //------------------------------------------------
+        // PASS 2
+        //------------------------------------------------
+
+        del=zeros(rows,cols);
+
+        for r=2:rows-1
+
+            for c=2:cols-1
+
+                if bw_out(r,c)==1 then
+
+                    //--------------------------------
+                    // Read neighbors
+                    //--------------------------------
+
+                    P2=bw_out(r-1,c);
+                    P3=bw_out(r-1,c+1);
+                    P4=bw_out(r,c+1);
+
+                    P5=bw_out(r+1,c+1);
+                    P6=bw_out(r+1,c);
+                    P7=bw_out(r+1,c-1);
+
+                    P8=bw_out(r,c-1);
+                    P9=bw_out(r-1,c-1);
+
+                    //--------------------------------
+                    // Compute code
+                    //--------------------------------
+
+                    code=0;
+
+                    code=code+P2*1;
+                    code=code+P3*2;
+                    code=code+P4*4;
+                    code=code+P5*8;
+
+                    code=code+P6*16;
+                    code=code+P7*32;
+                    code=code+P8*64;
+                    code=code+P9*128;
+
+                    //--------------------------------
+                    // LUT test
+                    //--------------------------------
+
+                    if lut2(code+1)==1 then
+                        del(r,c)=1;
+                    end
+
+                end
+
+            end
+
+        end
+
+        //-----------------------------------------
+        // delete pass2 pixels
+        //-----------------------------------------
+
+        if or(del==1) then
+
+            bw_out(del==1)=0;
+
+            changed=%t;
+
         end
 
     end
-endfunction
 
-function out = bwmorph_new(bw, op, n)
-    if argn(2) < 3 then n = %inf; end
-
-    select op
-    case 'thin'
-        out = bwmorph_thin_new(bw, n);
-    case 'skel'
-        out = bwmorph_thin_new(bw, %inf);
-    case 'denoise'
-        out = median_filter3(double(bw > 0));
-    else
-        error('bwmorph_new: unsupported operation ''%s''.  Supported: thin, skel, denoise', op);
-    end
 endfunction
